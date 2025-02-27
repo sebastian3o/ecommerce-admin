@@ -8,13 +8,13 @@ export async function GET(
 ){
 try{
  
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  
  const billboard = await prismadb.billboard.findUnique({
     where:{
-        id:params.billboardId,
+        id:(await params).billboardId,
     }
  })
 
@@ -33,7 +33,7 @@ export async function PATCH(
     {params}:{params:{storeId:string,billboardId:string}}
 ){
 try{
- const {userId}=await auth();
+ const {userId }=await auth();
  const body = await req.json();
  const {label,imageUrl} = body;
  if(!userId){
@@ -45,12 +45,12 @@ try{
  if(!imageUrl){
     return new NextResponse("Image url is required",{status:400})
  }
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:params.storeId,
+        id:(await params).storeId,
         userId
     }
 })
@@ -59,7 +59,7 @@ if(!storeByUserId){
 }
  const billboard = await prismadb.billboard.updateMany({
     where:{
-        id:params.billboardId,
+        id:(await params).billboardId,
     },
     data:{
         label,
@@ -87,12 +87,12 @@ try{
   return new NextResponse("Unauthenticated",{status:401})  
  }
 
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:params.storeId,
+        id:(await params).storeId,
         userId
     }
 })
@@ -101,7 +101,7 @@ if(!storeByUserId){
 }
  const billboard = await prismadb.billboard.deleteMany({
     where:{
-        id:params.billboardId,
+        id:(await params).billboardId,
     }
  })
 

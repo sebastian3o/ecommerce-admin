@@ -25,13 +25,13 @@ try{
             return new NextResponse("Image url is requiered",{status:400});
         }
 
-    if(!params.storeId)
+    if(!(await params).storeId)
         {
             return new NextResponse("Store id is requiered",{status:400});
         }
     const storeByUserId = await prismadb.store.findFirst({
         where: {
-            id:params.storeId,
+            id: (await params).storeId,
             userId
         }
     })
@@ -42,7 +42,7 @@ try{
         data:{
             label,
             imageUrl,
-            storeId: params.storeId
+            storeId: (await params).storeId
         }
     })
 

@@ -39,7 +39,7 @@ return(
         <AlertTitle className="flex items-center gap-x-2">
             {title}
             <Badge variant={variantMap[variant]}>
-                {textMap[variant]}
+                {textMap[variant]}a
             </Badge>
         </AlertTitle>
         <AlertDescription className="mt-4 flex items-center justify-between">
