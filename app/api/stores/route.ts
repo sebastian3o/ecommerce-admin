@@ -10,7 +10,7 @@ try{
     const { userId } = await auth();
     const body= await req.json();
     const {name} =body;
-
+    
     if(!userId)
     {
         

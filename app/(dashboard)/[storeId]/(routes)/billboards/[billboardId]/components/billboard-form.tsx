@@ -17,6 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
+import { useAuth } from "@clerk/nextjs";
 
 const formSchema = z.object({
     label:z.string().min(1),
@@ -35,7 +36,7 @@ type BillboardFormValues =z.infer<typeof formSchema>
 export const BillboardForm:React.FC<BillboardFormProps> = ({
     initialData
     })=>{
-
+        const { getToken, isLoaded } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -57,16 +58,30 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
     })
 
     const onSubmit = async (data:BillboardFormValues)=>{
+        window.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setTimeout(resolve, 100));
        try{
+
+        
+
         setLoading(true)
+        const token = await getToken();
+      console.log('Token:', token);
+      
         if(initialData){
-        await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`,data)
+        await axios.patch(`/api/${params.storeId}/billboards/${params.billboardId}`,data,{
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
+          })
         }else{
-        await axios.post(`/api/${params.storeId}/billboards`,data)
+        await axios.post(`/api/${params.storeId}/billboards`,data,{
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
+          })
 
         }
         router.refresh()
-        router.push(`/${params.storeId}/billboards`)
+        router.push(`/${params.storeId}/billboards`) 
         toast.success(toastMessage)
        }catch(error)
        { 
@@ -80,9 +95,17 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
     const onDelete = async ()=>{ 
         try{
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`)
+
+            window.dispatchEvent(new Event('focus'));
+             await new Promise(resolve => setTimeout(resolve, 100));
+
+            const token = await getToken();
+            await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`,{
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+              })
             router.refresh()
-            router.push("/")
+            router.push(`/${params.storeId}/billboards`)
             toast.success("Billboard deleted.")
         }catch(error){
             toast.error("Make sure you remove all categories using this billboard first.")
@@ -160,7 +183,7 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
                                 <FormMessage/>
                             </FormItem>
 
-                        )}
+                        )} 
                         />
 
                     </div>

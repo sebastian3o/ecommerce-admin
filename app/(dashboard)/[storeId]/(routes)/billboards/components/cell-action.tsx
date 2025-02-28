@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { AlertModal } from "@/components/modals/alert-modal";
+import { useAuth } from "@clerk/nextjs";
 
 interface CellActionsProps{
     data:BillboardColumn;
@@ -16,6 +17,10 @@ interface CellActionsProps{
 export const CellAction: React.FC<CellActionsProps> =({
     data
 })=>{
+
+    const { getToken, isLoaded } = useAuth();
+
+
     const router=useRouter()
     const params = useParams()
 
@@ -31,10 +36,18 @@ export const CellAction: React.FC<CellActionsProps> =({
     const onDelete = async ()=>{
         try{
             setLoading(true)
-            await axios.delete(`/api/${params.storeId}/billboards/${data.id}`)
+            const token = await getToken();
+
+            window.dispatchEvent(new Event('focus'));
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            await axios.delete(`/api/${params.storeId}/billboards/${data.id}`,{
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+              })
             router.refresh()
             router.push(`/${params.storeId}/billboards`)
-            toast.success("Billboard deleted.")
+            toast.success("Billboard deleted.") 
         }catch(error){
             toast.error("Make sure you remove all categories using this billboard first.")
         }finally{

@@ -17,6 +17,7 @@ import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
 import { ApiAlert } from "@/components/ui/api-alert";
 import { useOrigin } from "@/hooks/use-origin";
+import { useAuth } from '@clerk/nextjs';
 
 interface SettingsFormProps{
     initialData:Store;
@@ -33,6 +34,8 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
     initialData
     })=>{
 
+        const { getToken } = useAuth();
+
         const params = useParams()
         const router = useRouter()
         const origin = useOrigin()
@@ -42,12 +45,23 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
         const form =useForm<SettingsFormValues>({
         resolver: zodResolver(formSchema),
         defaultValues:initialData
-    })
+        })
 
     const onSubmit = async (data:SettingsFormValues)=>{
        try{
         setLoading(true)
-        await axios.patch(`/api/stores/${params.storeId}`,data)
+        await getToken()
+        const token = await getToken();
+
+        window.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+        await axios.patch(`/api/stores/${params.storeId}`,data, {
+            withCredentials: true,
+            headers: {
+              Authorization: `Bearer ${token}`, // Optional: Explicit token
+            },
+          })
         router.refresh()
         toast.success("Store updated.")
        }catch(error)

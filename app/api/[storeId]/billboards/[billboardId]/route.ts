@@ -1,14 +1,13 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-
 export async function GET(
     req:Request,
     {params}:{params:{billboardId:string}}
 ){
 try{
  
- if(!(await params).billboardId){
+ if(!params.billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  
@@ -36,7 +35,10 @@ try{
  const {userId }=await auth();
  const body = await req.json();
  const {label,imageUrl} = body;
+
+  
  if(!userId){
+
   return new NextResponse("Unauthenticated",{status:401})  
  }
  if(!label){
@@ -45,12 +47,12 @@ try{
  if(!imageUrl){
     return new NextResponse("Image url is required",{status:400})
  }
- if(!(await params).billboardId){
+ if(!params.billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:(await params).storeId,
+        id:params.storeId,
         userId
     }
 })
@@ -87,12 +89,12 @@ try{
   return new NextResponse("Unauthenticated",{status:401})  
  }
 
- if(!(await params).billboardId){
-    return new NextResponse("Billboard id is required",{status:400})
+ if(!params.billboardId){
+    return new NextResponse("Billboard id is required to delete",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:(await params).storeId,
+        id:params.storeId,
         userId
     }
 })
@@ -101,7 +103,7 @@ if(!storeByUserId){
 }
  const billboard = await prismadb.billboard.deleteMany({
     where:{
-        id:(await params).billboardId,
+        id: (await params).billboardId,
     }
  })
 
