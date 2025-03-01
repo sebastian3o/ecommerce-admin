@@ -48,13 +48,15 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
         })
 
     const onSubmit = async (data:SettingsFormValues)=>{
-       try{
+        for(let i=0;i<2;i++)
+       {try{
+        window.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setTimeout(resolve, 100));
         setLoading(true)
         await getToken()
         const token = await getToken();
 
-        window.dispatchEvent(new Event('focus'));
-    await new Promise(resolve => setTimeout(resolve, 100));
+        
 
         await axios.patch(`/api/stores/${params.storeId}`,data, {
             withCredentials: true,
@@ -64,23 +66,34 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
           })
         router.refresh()
         toast.success("Store updated.")
+        break
        }catch(error)
        {
-        toast.error("Something went wrong.")
+        if(i==1)toast.error("Something went wrong.")
        }finally{
         setLoading(false)
        }
     }
+    }
 
     const onDelete = async ()=>{
+        for(let i =0;i<2;i++)
         try{
+            window.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setTimeout(resolve, 100));
             setLoading(true)
-            await axios.delete(`/api/stores/${params.storeId}`)
+            const token = await getToken();
+
+            await axios.delete(`/api/stores/${params.storeId}`,{
+                headers: { Authorization: `Bearer ${token}` },
+                withCredentials: true,
+              })
             router.refresh()
             router.push("/")
             toast.success("Store deleted.")
+            break
         }catch(error){
-            toast.error("Make sure you remove all products and categories first.")
+           if(i==1) toast.error("Make sure you remove all products and categories first.")
         }finally{
             setLoading(false)
             setOpen(false)

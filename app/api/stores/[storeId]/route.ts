@@ -1,5 +1,6 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
+import { errorMonitor } from "events";
 import { NextRequest, NextResponse } from "next/server";
 export async function PATCH(
     req:NextRequest,
@@ -52,13 +53,13 @@ try{
   return new NextResponse("Unauthenticated",{status:401})  
  }
 
- if(!params.storeId){
+ if(!(await params).storeId){
     return new NextResponse("Store id is required",{status:400})
  }
 
  const store = await prismadb.store.deleteMany({
     where:{
-        id:params.storeId,
+        id:(await params).storeId,
         userId
     }
  })

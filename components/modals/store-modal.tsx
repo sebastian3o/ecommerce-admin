@@ -12,6 +12,8 @@ import { Form, FormControl, FormField,FormItem,FormLabel, FormMessage } from "@/
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import toast from "react-hot-toast";
+import { useAuth } from "@clerk/nextjs";
+
 
 const formSchema=z.object({
     name:z.string().min(1),
@@ -20,6 +22,9 @@ const formSchema=z.object({
 
 export const StoreModal =()=>
 {
+    const { getToken, isLoaded } = useAuth();
+
+
     const storeModal = useStoreModal();
 
     const [loading,setLoading] = useState(false)
@@ -33,14 +38,26 @@ export const StoreModal =()=>
 
    const onSubmit = async (values: z.infer<typeof formSchema>)=>{
    
+    for(let i=0;i<2;i++)
     try{
+        window.dispatchEvent(new Event('focus'));
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
         setLoading(true);
-        const response=await axios.post("/api/stores",values)
+
+        const token = await getToken();
+
+
+        const response=await axios.post("/api/stores",values,{
+            headers: { Authorization: `Bearer ${token}` },
+            withCredentials: true,
+          })
         window.location.assign(`/${response.data.id}`);
+        break;
        }catch(error){
-        toast.error("Something went wrong")
+        if(i==1)toast.error("Something went wrong")
        }finally{
-       setLoading(false)
+       setLoading(false) 
        }
 
    }

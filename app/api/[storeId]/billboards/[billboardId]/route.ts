@@ -47,12 +47,12 @@ try{
  if(!imageUrl){
     return new NextResponse("Image url is required",{status:400})
  }
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:params.storeId,
+        id:(await params).storeId,
         userId
     }
 })
@@ -89,12 +89,12 @@ try{
   return new NextResponse("Unauthenticated",{status:401})  
  }
 
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required to delete",{status:400})
  }
  const storeByUserId = await prismadb.store.findFirst({
     where: {
-        id:params.storeId,
+        id:(await params).storeId,
         userId
     }
 })
@@ -103,7 +103,7 @@ if(!storeByUserId){
 }
  const billboard = await prismadb.billboard.deleteMany({
     where:{
-        id: (await params).billboardId,
+        id:(await params).billboardId,
     }
  })
 

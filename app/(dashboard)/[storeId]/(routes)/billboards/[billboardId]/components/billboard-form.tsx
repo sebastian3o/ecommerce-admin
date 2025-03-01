@@ -58,11 +58,12 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
     })
 
     const onSubmit = async (data:BillboardFormValues)=>{
-        window.dispatchEvent(new Event('focus'));
-    await new Promise(resolve => setTimeout(resolve, 100));
+        
+    for (let attempt = 1; attempt <= 2; attempt++) {
        try{
 
-        
+        window.dispatchEvent(new Event('focus'));
+    await new Promise(resolve => setTimeout(resolve, 100));
 
         setLoading(true)
         const token = await getToken();
@@ -83,21 +84,27 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
         router.refresh()
         router.push(`/${params.storeId}/billboards`) 
         toast.success(toastMessage)
+        break;
+
        }catch(error)
        { 
-        
-        toast.error("Something went wrong.")
+         if (attempt === 2) {
+            toast.error("Something went wrong");
+        }
        }finally{
         setLoading(false)
        }
     }
+    }
 
     const onDelete = async ()=>{ 
+       
+        for (let attempt = 1; attempt <= 2; attempt++) {
         try{
             setLoading(true)
 
             window.dispatchEvent(new Event('focus'));
-             await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 100));
 
             const token = await getToken();
             await axios.delete(`/api/${params.storeId}/billboards/${params.billboardId}`,{
@@ -107,13 +114,15 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
             router.refresh()
             router.push(`/${params.storeId}/billboards`)
             toast.success("Billboard deleted.")
+            break;
+
         }catch(error){
-            toast.error("Make sure you remove all categories using this billboard first.")
-            console.log(error)
+            if (attempt === 2) toast.error("Make sure you remove all categories using this billboard first.")
         }finally{
             setLoading(false)
             setOpen(false)
         }
+    }
     }
 
     return (

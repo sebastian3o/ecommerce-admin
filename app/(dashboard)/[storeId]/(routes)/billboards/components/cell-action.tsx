@@ -34,12 +34,17 @@ export const CellAction: React.FC<CellActionsProps> =({
         toast.success("Billboard Id copied to the clipboard.")
     }
     const onDelete = async ()=>{
+        
+       
+        
+
+        for (let attempt = 1; attempt <= 2; attempt++) {
         try{
+            window.dispatchEvent(new Event('focus'));
+            await new Promise(resolve => setTimeout(resolve, 100));
             setLoading(true)
             const token = await getToken();
 
-            window.dispatchEvent(new Event('focus'));
-            await new Promise(resolve => setTimeout(resolve, 100));
 
             await axios.delete(`/api/${params.storeId}/billboards/${data.id}`,{
                 headers: { Authorization: `Bearer ${token}` },
@@ -48,12 +53,17 @@ export const CellAction: React.FC<CellActionsProps> =({
             router.refresh()
             router.push(`/${params.storeId}/billboards`)
             toast.success("Billboard deleted.") 
+            
+            break;
         }catch(error){
-            toast.error("Make sure you remove all categories using this billboard first.")
+            if (attempt === 2) {
+                toast.error("Make sure you remove all categories using this billboard first.");
+            }
         }finally{
             setLoading(false)
             setOpen(false)
         }
+    }
     }
     return (
         <>
