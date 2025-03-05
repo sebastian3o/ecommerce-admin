@@ -9,13 +9,13 @@ import { OrderColumn } from './components/columns'
 const OrdersPage = async ({
   params,
 }: {
-  params: {
+  params: Promise<{
     storeId: string
-  }
+  }>
 }) => {
   const orders = await prismadb.order.findMany({
     where: {
-      storeId: params.storeId,
+      storeId:(await params).storeId,
     },
     include: {
       orderItems: {

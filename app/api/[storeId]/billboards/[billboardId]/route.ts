@@ -3,11 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 export async function GET(
     req:Request,
-    {params}:{params:{billboardId:string}}
+    {params}:{params:Promise<{billboardId:string}>}
 ){
 try{
  
- if(!params.billboardId){
+ if(!(await params).billboardId){
     return new NextResponse("Billboard id is required",{status:400})
  }
  
@@ -31,7 +31,7 @@ try{
 
 export async function PATCH(
     req:Request,
-    {params}:{params:{storeId:string,billboardId:string}}
+    {params}:{params:Promise<{storeId:string,billboardId:string}>}
 ){
 try{
  const {userId }=await auth();
@@ -82,7 +82,7 @@ if(!storeByUserId){
 
 export async function DELETE(
     req:Request,
-    {params}:{params:{storeId:string,billboardId:string}}
+    {params}:{params:Promise<{storeId:string,billboardId:string}>}
 ){
 try{
  const {userId}=await auth();

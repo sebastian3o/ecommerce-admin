@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(
     req:Request,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ) {
 try{
 
@@ -58,18 +58,18 @@ try{
 
 export async function GET(
     req:Request,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ) {
 try{
 
 
-    if(!params.storeId)
+    if(!(await params).storeId)
         {
             return new NextResponse("Store id is requiered",{status:400});
         }
     const billboards = await prismadb.billboard.findMany({
         where:{
-            storeId:params.storeId,
+            storeId:(await params).storeId,
         }
     })
 

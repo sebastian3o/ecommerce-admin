@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 export async function PATCH(
     req:NextRequest,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ){
 try{
  const body = await req.json();
@@ -43,7 +43,7 @@ try{
 
 export async function DELETE(
     req:Request,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ){
 try{
  const {userId}=await auth();

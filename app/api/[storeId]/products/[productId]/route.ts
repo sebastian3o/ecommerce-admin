@@ -3,11 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 export async function GET(
     req:Request,
-    {params}:{params:{productId:string}}
+    {params}:{params:Promise<{productId:string}>}
 ){
 try{
  
- if(!params.productId){
+ if(! (await params).productId){
     return new NextResponse("Product id is required",{status:400})
  }
  
@@ -35,7 +35,7 @@ try{
 
 export async function PATCH(
     req:Request,
-    {params}:{params:{storeId:string,productId:string}}
+    {params}:{params:Promise<{storeId:string,productId:string}>}
 ){
 try{
  const {userId }=await auth();
@@ -80,7 +80,7 @@ try{
       return new NextResponse('Missing images', { status: 400 })
     }
 
-    if (!params.productId) {
+    if (!(await params).productId) {
       return new NextResponse('Missing product id', { status: 400 })
     }
  const storeByUserId = await prismadb.store.findFirst({
@@ -94,7 +94,7 @@ if(!storeByUserId){
 }
 await prismadb.product.update({
     where: {
-      id: params.productId,
+      id: (await params).productId,
     },
     data: {
       name,
@@ -112,7 +112,7 @@ await prismadb.product.update({
 
   const product = await prismadb.product.update({
     where: {
-      id: params.productId,
+      id: (await params).productId,
     },
     data: {
       images: {
@@ -134,7 +134,7 @@ await prismadb.product.update({
 
 export async function DELETE(
     req:Request,
-    {params}:{params:{storeId:string,productId:string}}
+    {params}:{params:Promise<{storeId:string,productId:string}>}
 ){
 try{
  const {userId}=await auth();

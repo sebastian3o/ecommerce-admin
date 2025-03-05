@@ -3,11 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 export async function GET(
     req:Request,
-    {params}:{params:{categoryId:string}}
+    {params}:{params:Promise<{categoryId:string}>}
 ){
 try{
  
- if(!params.categoryId){
+ if(!(await params).categoryId){
     return new NextResponse("Category id is required",{status:400})
  }
  
@@ -32,7 +32,7 @@ try{
 
 export async function PATCH(
     req:Request,
-    {params}:{params:{storeId:string,categoryId:string}}
+    {params}:{params:Promise<{storeId:string,categoryId:string}>}
 ){
 try{
  const {userId }=await auth();
@@ -83,7 +83,7 @@ if(!storeByUserId){
 
 export async function DELETE(
     req:Request,
-    {params}:{params:{storeId:string,categoryId:string}}
+    {params}:{params:Promise<{storeId:string,categoryId:string}>}
 ){
 try{
  const {userId}=await auth();

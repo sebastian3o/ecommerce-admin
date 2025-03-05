@@ -19,9 +19,9 @@ export async function POST(
   {
     params,
   }: {
-    params: {
+    params: Promise<{
       storeId: string
-    }
+    }>
   },
 ) {
   const { productIds } = await req.json()
@@ -57,7 +57,7 @@ export async function POST(
 
   const order = await prismadb.order.create({
     data: {
-      storeId: params.storeId,
+      storeId: (await params).storeId,
       isPaid: false,
       orderItems: {
         create: productIds.map((productId: string) => ({

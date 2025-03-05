@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 export async function POST(
     req:Request,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ) {
 try{
 
@@ -72,7 +72,7 @@ try{
           colorId,
           isFeatured,
           isArchived,
-          storeId: params.storeId,
+          storeId: (await params).storeId,
           images: {
             createMany: {
               data: [...images.map((image: { url: string }) => image)],
@@ -93,7 +93,7 @@ try{
 
 export async function GET(
     req:Request,
-    {params}:{params:{storeId:string}}
+    {params}:{params:Promise<{storeId:string}>}
 ) {
 try{
 
@@ -104,13 +104,13 @@ try{
     const isFeatured = searchParams.get('isFeatured')
 
 
-    if(!params.storeId)
+    if(!(await params).storeId)
         {
             return new NextResponse("Store id is requiered",{status:400});
         }
         const products = await prismadb.product.findMany({
             where: {
-              storeId: params.storeId,
+              storeId: (await params).storeId,
               categoryId,
               colorId,
               sizeId,

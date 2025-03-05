@@ -7,7 +7,7 @@ import { ColorColumn } from "./components/columns";
 const ColorsPage = async ({
     params
 }:{
-    params:{storeId:string}
+    params:Promise<{storeId:string}>
 }) => {
     const colors = await prismadb.color.findMany({
         where:{
