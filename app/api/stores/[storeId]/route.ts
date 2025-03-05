@@ -1,6 +1,5 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
-import { errorMonitor } from "events";
 import { NextRequest, NextResponse } from "next/server";
 export async function PATCH(
     req:NextRequest,

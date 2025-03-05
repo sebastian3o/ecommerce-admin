@@ -15,8 +15,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
-import ImageUpload from "@/components/ui/image-upload";
+
 import { useAuth } from "@clerk/nextjs";
 
 const formSchema = z.object({
@@ -36,7 +35,7 @@ type SizeFormValues =z.infer<typeof formSchema>
 export const SizeForm:React.FC<SizeFormProps> = ({
     initialData
     })=>{
-        const { getToken, isLoaded } = useAuth();
+        const { getToken } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -89,6 +88,8 @@ export const SizeForm:React.FC<SizeFormProps> = ({
        }catch(error)
        { 
          if (attempt === 2) {
+            console.log(error)
+
             toast.error("Something went wrong");
         }
        }finally{
@@ -117,6 +118,8 @@ export const SizeForm:React.FC<SizeFormProps> = ({
             break;
 
         }catch(error){
+            console.log(error)
+
             if (attempt === 2) toast.error("Make sure you remove all products using this size first.")
         }finally{
             setLoading(false)

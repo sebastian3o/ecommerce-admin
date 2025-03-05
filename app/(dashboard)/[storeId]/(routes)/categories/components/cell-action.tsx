@@ -18,7 +18,7 @@ export const CellAction: React.FC<CellActionsProps> =({
     data
 })=>{
 
-    const { getToken, isLoaded } = useAuth();
+    const { getToken } = useAuth();
 
 
     const router=useRouter()
@@ -56,6 +56,7 @@ export const CellAction: React.FC<CellActionsProps> =({
             
             break;
         }catch(error){
+            console.log(error)
             if (attempt === 2) {
                 toast.error("Make sure you remove all products using this category first.");
             }

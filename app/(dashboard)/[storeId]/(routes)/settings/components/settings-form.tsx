@@ -69,6 +69,8 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
         break
        }catch(error)
        {
+        console.log(error)
+
         if(i==1)toast.error("Something went wrong.")
        }finally{
         setLoading(false)
@@ -93,6 +95,7 @@ export const SettingsForm:React.FC<SettingsFormProps> = ({
             toast.success("Store deleted.")
             break
         }catch(error){
+            console.log(error)
            if(i==1) toast.error("Make sure you remove all products and categories first.")
         }finally{
             setLoading(false)

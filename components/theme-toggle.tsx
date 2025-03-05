@@ -13,19 +13,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ModeToggle() {
-  const { setTheme, theme } = useTheme();
+  const { setTheme } = useTheme();
   const [mounted, setMounted] = React.useState(false);
 
-  // Ensure the component only renders after mounting on the client
   React.useEffect(() => {
     setMounted(true);
   }, []);
 
-  // Return null or a placeholder during SSR
   if (!mounted) {
     return (
       <Button variant="outline" size="icon">
-        <Sun className="h-[1.2rem] w-[1.2rem]" /> {/* Default SSR placeholder */}
+        <Sun className="h-[1.2rem] w-[1.2rem]" /> 
         <span className="sr-only">Toggle theme</span>
       </Button>
     );

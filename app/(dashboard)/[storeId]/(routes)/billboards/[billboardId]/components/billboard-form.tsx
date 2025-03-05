@@ -15,7 +15,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 import { useAuth } from "@clerk/nextjs";
 
@@ -36,7 +35,7 @@ type BillboardFormValues =z.infer<typeof formSchema>
 export const BillboardForm:React.FC<BillboardFormProps> = ({
     initialData
     })=>{
-        const { getToken, isLoaded } = useAuth();
+        const { getToken } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -90,6 +89,7 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
        { 
          if (attempt === 2) {
             toast.error("Something went wrong");
+            console.log(error)
         }
        }finally{
         setLoading(false)
@@ -118,7 +118,8 @@ export const BillboardForm:React.FC<BillboardFormProps> = ({
 
         }catch(error){
             if (attempt === 2) toast.error("Make sure you remove all categories using this billboard first.")
-        }finally{
+                console.log(error)
+            }finally{
             setLoading(false)
             setOpen(false)
         }

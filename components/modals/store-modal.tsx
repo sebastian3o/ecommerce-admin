@@ -22,7 +22,7 @@ const formSchema=z.object({
 
 export const StoreModal =()=>
 {
-    const { getToken, isLoaded } = useAuth();
+    const { getToken } = useAuth();
 
 
     const storeModal = useStoreModal();
@@ -55,6 +55,7 @@ export const StoreModal =()=>
         window.location.assign(`/${response.data.id}`);
         break;
        }catch(error){
+        console.log(error)
         if(i==1)toast.error("Something went wrong")
        }finally{
        setLoading(false) 

@@ -15,8 +15,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
-import ImageUpload from "@/components/ui/image-upload";
 import { useAuth } from "@clerk/nextjs";
 
 const formSchema = z.object({
@@ -38,7 +36,7 @@ type ColorFormValues =z.infer<typeof formSchema>
 export const ColorForm:React.FC<ColorFormProps> = ({
     initialData
     })=>{
-        const { getToken, isLoaded } = useAuth();
+        const { getToken } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -91,6 +89,7 @@ export const ColorForm:React.FC<ColorFormProps> = ({
        }catch(error)
        { 
          if (attempt === 2) {
+            console.log(error)
             toast.error("Something went wrong");
         }
        }finally{
@@ -119,6 +118,8 @@ export const ColorForm:React.FC<ColorFormProps> = ({
             break;
 
         }catch(error){
+            console.log(error)
+
             if (attempt === 2) toast.error("Make sure you remove all products using this color first.")
         }finally{
             setLoading(false)

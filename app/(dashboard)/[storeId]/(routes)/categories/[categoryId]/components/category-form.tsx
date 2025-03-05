@@ -15,7 +15,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
 import { useAuth } from "@clerk/nextjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -38,7 +37,7 @@ export const CategoryForm:React.FC<CategoryFormProps> = ({
     initialData,
     billboards
     })=>{
-        const { getToken, isLoaded } = useAuth();
+        const { getToken } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -91,6 +90,7 @@ export const CategoryForm:React.FC<CategoryFormProps> = ({
        }catch(error)
        { 
          if (attempt === 2) {
+            console.log(error)
             toast.error("Something went wrong");
         }
        }finally{
@@ -120,7 +120,8 @@ export const CategoryForm:React.FC<CategoryFormProps> = ({
 
         }catch(error){
             if (attempt === 2) toast.error("Make sure you remove all products using this category first.")
-        }finally{
+                console.log(error)
+            }finally{
             setLoading(false)
             setOpen(false)
         }

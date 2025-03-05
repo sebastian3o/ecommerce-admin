@@ -18,7 +18,7 @@ export const CellAction: React.FC<CellActionsProps> =({
     data
 })=>{
 
-    const { getToken, isLoaded } = useAuth();
+    const { getToken } = useAuth();
 
 
     const router=useRouter()
@@ -58,6 +58,8 @@ export const CellAction: React.FC<CellActionsProps> =({
         }catch(error){
             if (attempt === 2) {
                 toast.error("Something went wrong");
+            console.log(error)
+
             }
         }finally{
             setLoading(false)

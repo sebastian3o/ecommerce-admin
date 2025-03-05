@@ -15,7 +15,6 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
-import { useOrigin } from "@/hooks/use-origin";
 import ImageUpload from "@/components/ui/image-upload";
 import { useAuth } from "@clerk/nextjs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -54,7 +53,7 @@ export const ProductForm:React.FC<ProductFormProps> = ({
     sizes,
     colors
     })=>{
-        const { getToken, isLoaded } = useAuth();
+        const { getToken } = useAuth();
         const params = useParams()
         const router = useRouter()
 
@@ -117,6 +116,7 @@ export const ProductForm:React.FC<ProductFormProps> = ({
 
        }catch(error)
        { 
+        console.log(error)
          if (attempt == 2) {
             toast.error("Something went wrong");
         }
@@ -146,6 +146,7 @@ export const ProductForm:React.FC<ProductFormProps> = ({
             break;
 
         }catch(error){
+            console.log(error)
             if (attempt === 2) toast.error("Something went wrong")
         }finally{
             setLoading(false)
