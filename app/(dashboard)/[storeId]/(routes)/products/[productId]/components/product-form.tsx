@@ -117,7 +117,7 @@ export const ProductForm:React.FC<ProductFormProps> = ({
 
        }catch(error)
        { 
-         if (attempt === 2) {
+         if (attempt == 2) {
             toast.error("Something went wrong");
         }
        }finally{

@@ -14,6 +14,9 @@ try{
  const category = await prismadb.category.findUnique({
     where:{
         id:(await params).categoryId,
+    },
+    include:{
+        billboard:true,
     }
  })
 

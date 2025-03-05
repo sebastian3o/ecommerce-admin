@@ -14,7 +14,9 @@ try{
  const billboard = await prismadb.billboard.findUnique({
     where:{
         id:(await params).billboardId,
-    }
+    },
+   
+
  })
 
  return NextResponse.json(billboard)
